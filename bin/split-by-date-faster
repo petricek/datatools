@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use IO::File;
+
+my $name=shift @ARGV;
+my $col=shift @ARGV;
+my $usage="zcat file.gz | $0 name column\n";
+
+if(! defined $name)
+{
+        print $usage; 
+        exit();
+}
+
+my %handles=();
+
+while(my $line=<>)
+{
+	my @F = split(/\t/, $line);
+	my $group=$F[$col-1];
+
+	if(! exists $handles{$group})
+	{
+		$handles{$group} = new IO::File "| gzip > $group-$name.gz", "w" or die "$group-$name.gz: $!\n";
+	}
+
+	my $fh = $handles{$group};
+
+	print $fh $_;
+}
+
+# close files
+foreach my $group (keys %handles)
+{
+	close $handles{$group};
+}

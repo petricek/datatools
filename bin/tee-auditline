@@ -1,0 +1,40 @@
+#! /usr/bin/env perl
+
+use warnings;
+use strict;
+
+my %uniqs = ();
+my $usage = "zcat data.gz | tee-auditline data.auditline | vw5 -t ... \n";
+my $teefile = shift @ARGV or die $usage;
+open(TEE, ">$teefile") or die "Can't open file $teefile: $!\n";
+
+while (defined ($_ = <>))
+  {
+    print $_; # pipe through to stdout
+
+    chomp;
+    my (undef, @groups) = split /\s*\|/, $_;
+
+    foreach my $g (@groups)
+      {
+        my ($name, @features) = split /\s+/, $g;
+
+        $uniqs{$name} ||= {};
+
+        foreach my $f (@features)
+          {
+            my ($v, undef) = split /:/, $f;
+
+            $uniqs{$name}->{$v} = 1;
+          }
+      }
+  }
+
+print TEE "1";
+foreach my $name (keys %uniqs)
+  {
+    print TEE " |$name ";
+
+    print TEE join " ", sort keys %{$uniqs{$name}};
+  }
+print TEE "\n";

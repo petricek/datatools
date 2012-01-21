@@ -1,0 +1,158 @@
+#! /usr/bin/env perl
+$|=1;
+
+use warnings;
+use strict;
+
+use IO::File;
+
+my $usage = "zcat data.gz | $0 header\n";
+my $headerfile = shift @ARGV or die "$usage";
+my $headerfh = new IO::File $headerfile, "r" or die $!;
+my $headerline = <$headerfh>;
+undef $headerfh;
+
+chomp $headerline;
+my @headers = split /,/, $headerline;
+my %headers;
+my $index = 0;
+
+
+foreach my $header (@headers)
+  { 
+    $headers{$header} = $index unless exists $headers{$header};
+    ++$index;
+    die "bad header $header" if $header =~ /:\|\s/;
+  }
+
+my %whitelist = map { $_ => 1 } qw (
+SS_IMP_MATCH_DENOMINATION_U
+SS_IMP_MATCH_DISTANCE_U
+SS_IMP_MATCH_DRINKING_LEVEL_U
+SS_IMP_MATCH_HEIGHT_U
+SS_IMP_MATCH_DENOMINATION_C
+SS_IMP_MATCH_DISTANCE_C
+SS_IMP_MATCH_DRINKING_LEVEL_C
+SS_IMP_MATCH_HEIGHT_C
+);
+my %blacklist = map { $_ => 1 } qw (
+                                     TWOWAYCOMM
+                                     TWOWAYCOMM_14D
+                                     TWOWAYCOMM_STAMP
+                                     M_ONE_WAY
+                                     MATCH_DATE
+                                     PairingCardinal
+                                     MatchCardinal
+                                     AvailableMatchAllowanceLeft
+                                     MATCHDATESTAMP
+                                     MATCH_ID
+                                     USER_LAST
+                                     CAND_LAST
+                                     USER_ID
+                                     CANDIDATEUSER_ID
+                                     CAND_LAST_ID
+                                     USER_LAST_ID
+                                     AvailablePairingLeft 
+                                     MA_USERTOTALMATCHES_C 
+                                     MA_USERTOTALMATCHES_U 
+                                     M_MATCHID 
+                                     ModelScore 
+                                     PA_DISTANCE 
+                                     PS_AVAILABLE_PAIRINGS_C 
+                                     PS_AVAILABLE_PAIRINGS_U 
+                                     PS_PAIRINGCOUNT_C 
+                                     PS_PAIRINGCOUNT_U 
+                                     TWOWAYCOMM_DATETIME 
+                                     TimeStamp 
+                                     UO_USERTOTALVISITS_C 
+                                     UO_USERTOTALVISITS_U 
+                                     US_ODMRCOUNT_C 
+                                     US_ODMRCOUNT_U 
+                                     US_USERID_C 
+                                     US_USERID_U 
+				     LOGINS_MATCH_ID
+				     USER_ID
+				     CANDIDATEUSER_ID
+				     CREATE_DATE
+				     UPS_MATCH_ID
+				     MATCHDATESTAMP
+				     USER_ID
+				     CANDIDATEUSER_ID
+                                   );
+
+#my @okkeys = grep { ! exists $blacklist{$_} } keys %headers;
+my @okkeys = grep { exists $whitelist{$_} } keys %headers;
+print join '|', @okkeys;
+my %counts;
+my $totalpos = 0;
+my $total = 0;
+
+while (<>)
+  {
+    chomp;
+    my @line = split /\t/, $_;
+
+	#next if ($line[$headers{US_GENDER_PREFERENCE_U}] eq $line[$headers{US_USERGENDER_U}]);
+	next if ($line[$headers{M_MATCHTYPE}] != 1);
+	next if ($line[$headers{M_ONE_WAY}] > 0);
+
+    my $positive = (defined $headers{TWOWAYCOMM}) ? $line[$headers{TWOWAYCOMM}] : $line[$headers{TWOWAYCOMM_14D}];
+
+    foreach my $col (@okkeys)
+      {
+        foreach my $val ('total', $line[$headers{$col}])
+          {
+            $counts{$col} ||= {};
+            $counts{$col}->{$val} ||= [ 0, 0 ];
+            
+            if ($positive)
+              {
+                ++$counts{$col}->{$val}->[0];
+                ++$totalpos;
+              }
+
+            ++$counts{$col}->{$val}->[1];
+            ++$total;
+          }
+      }
+  }
+
+my $px1 = $totalpos / $total;
+my $px0 = 1 - $px1;
+
+my $selfinf = 0;
+$selfinf += $px0 * log ($px0) if $px0 > 0;
+$selfinf += $px1 * log ($px1) if $px1 > 0;
+
+foreach my $col (keys %counts)
+  {
+    my @values = keys %{$counts{$col}};
+
+    my $conditionalent = 0;
+
+    my (undef, $totaln) = @{$counts{$col}->{'total'}};
+
+    foreach my $v (@values)
+      {
+        next if $v eq 'total';
+
+        my ($c, $n) = @{$counts{$col}->{$v}};
+        my $py = $n / $totaln;
+        my $px1gy = $c / $n;
+        my $px0gy = 1 - $px1gy;
+
+        if ($px0gy > 0)
+          {
+            $conditionalent += $py * $px0gy * log ($px0gy);
+          }
+
+        if ($px1gy > 0)
+          {
+            $conditionalent += $py * $px1gy * log ($px1gy);
+          }
+      }
+
+    print join "\t", $col, $selfinf - $conditionalent;
+    print "\n";
+  }
+

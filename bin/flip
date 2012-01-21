@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+while(my $l=<>)
+{
+        chomp $l;
+        my ($p, $t) = split(/\s|\t/, $l);
+        print "$t $p\n";
+
+}
+

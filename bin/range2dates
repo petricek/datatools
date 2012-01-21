@@ -1,0 +1,106 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Time::Local;
+
+sub parse_ymd_date($)		
+{
+	my ($date) = @_;
+        #print $date . "\n";
+	$date =~ /(\d\d\d\d)(\d\d)(\d\d)/ or die "Expected format YYYYMMDD got $date\n";
+	my $y=$1;
+	my $m=$2;
+	my $d=$3;
+	return ($y,$m,$d);
+}
+
+sub epoch2ymd($)
+{
+        my ($e) = @_;
+
+        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($e);
+        my ($t1,$t2,$t3, $d, $m, $y, $t4,$t5,$t6) = localtime($e);
+
+        return (1900 + $year, sprintf("%02d", ($mon + 1)), sprintf("%02d", $mday));
+}
+
+sub ymd2epoch($$$)
+{
+        my ($y, $m, $d) = @_;
+
+	return timelocal(1,1,1,$d,$m-1,$y);
+}
+
+sub range2dates($$)
+{
+	my ( $s, $e ) = @_;
+
+	my @dates=();
+
+	my $y;
+	my $m;
+	my $d;
+
+	($y,$m,$d) = parse_ymd_date($s);
+	my $s_epoch = ymd2epoch($y,$m,$d);
+
+	if($e =~ /^\+(\d*)/)
+	{
+		my $n=$1;
+		my $epoch = $s_epoch;
+		my $date = $s;
+		for(my $i=0;$i<=$n;$i++)
+		{
+			push @dates, $date;
+			$epoch += 24*60*60; # day++
+			my ($year, $month, $day) = epoch2ymd($epoch);
+			$date = "$year$month$day";
+		}
+	}
+	elsif($e =~ /^\-(\d*)/)
+	{
+		my $n=$1;
+		my $epoch = $s_epoch;
+		my $date = $s;
+		for(my $i=0;$i<=$n;$i++)
+		{
+			push @dates, $date;
+			$epoch -= 24*60*60; # day++
+			my ($year, $month, $day) = epoch2ymd($epoch);
+			$date = "$year$month$day";
+		}
+	}
+	else
+	{
+		($y,$m,$d) = parse_ymd_date($e);
+		my $e_epoch = ymd2epoch($y,$m,$d);
+
+		my $epoch = $s_epoch;
+		while($epoch <= $e_epoch)
+		{
+			my ($year, $month, $day) = epoch2ymd($epoch);
+			
+			push @dates, "$year$month$day";
+			$epoch += 24*60*60; # day++
+		}
+	}
+
+	return @dates;
+}	
+
+sub main()
+{
+	my $usage = "$0 start {end|+n|-n}\n";
+	my $start = shift @ARGV or die $usage;
+	my $end = shift @ARGV or die $usage;
+
+#	print "$start\n";
+#	print "$end\n\n";
+	my @dates = range2dates($start, $end);
+	print join("\n", @dates) . "\n";
+}
+
+
+main();

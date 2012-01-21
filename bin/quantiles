@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+R --vanilla --slave -f <(echo "
+data <- read.delim('/dev/stdin');
+quantile(data[,1])
+")
+

@@ -1,0 +1,35 @@
+#! /usr/bin/env perl
+
+use warnings;
+use strict;
+
+my %uniqs;
+
+while (defined ($_ = <>))
+  {
+    chomp;
+    my (undef, @groups) = split /\s+\|/, $_;
+
+    foreach my $g (@groups)
+      {
+        my ($name, @features) = split /\s+/, $g;
+
+        $uniqs{$name} ||= {};
+
+        foreach my $f (@features)
+          {
+            my ($v, undef) = split /:/, $f;
+
+            $uniqs{$name}->{$v} = 1;
+          }
+      }
+  }
+
+print "1";
+foreach my $name (keys %uniqs)
+  {
+    print " |$name ";
+
+    print join " ", sort keys %{$uniqs{$name}};
+  }
+print "\n";

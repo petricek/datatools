@@ -1,0 +1,45 @@
+#!/usr/bin/env perl
+
+my $usage = "$0 logistic|squared\n";
+my $direction = shift @ARGV or die $usage;
+
+while(my $l=<>)
+{
+	chomp $l;
+	# vw input with labels
+	if($l =~ /(0|-1) (0|-1)\|/)
+	{
+		if($direction eq "logistic")
+		{
+			$l =~ s/^0 0/-1 -1/;
+		}
+		elsif($direction eq "squared")
+		{
+			$l =~ s/^-1 -1/0 0/;
+		}
+		else
+		{
+			die "$usage";
+		}
+		print "$l\n";
+
+	}
+	else
+	{
+		$l =~ /^([^\t ]*)(\t|\s\s*)(.*)/;
+		my ($dv, $sep, $rest) = ($1, $2, $3);
+		if($direction eq "logistic")
+		{
+			$dv =~ s/^0/-1/;
+		}
+		elsif($direction eq "squared")
+		{
+			$dv =~ s/^-1/0/;
+		}
+		else
+		{
+			die "$usage";
+		}
+		print "$dv$sep$rest\n";
+	}
+}

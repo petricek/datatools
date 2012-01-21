@@ -1,0 +1,13 @@
+
+
+while true
+do
+	clear
+	elastic-mapreduce --list `cat /vw/cluster.id | perl -pe 's/^/-j /;'` $@ | less
+
+	read -s -t 1 -n1 x
+	if [ $x == 'q' ]
+	then
+		exit
+	fi
+done

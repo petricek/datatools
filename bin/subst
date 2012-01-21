@@ -1,0 +1,32 @@
+#!/usr/bin/perl -n
+
+use strict;
+use warnings;
+
+$|=1;
+
+s/__(\w+?)__/$ENV{$1}/eg;
+
+if(/^__FOREACH_(\w+?):(.*)__X(.*)/)
+{
+	my @vals = split(' ',$ENV{$1});
+	foreach my $v (@vals)
+	{
+		print "$2$v$3\n";
+	}
+}
+elsif(/__FOREACH_(\w+?)_(.*):\((.*)__X(.*)\)/)
+{
+	my @vals = split(' ',$ENV{$1});
+	my @res=();
+	foreach my $v (@vals)
+	{
+		push @res, "$3$v$4";
+	}
+	my $res = join("$2", @res);
+	s/__FOREACH_(\w+?):\((.*)__X(.*)\)/$res/;
+}
+else
+{
+	print $_;
+}
