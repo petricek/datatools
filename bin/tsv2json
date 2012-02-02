@@ -93,7 +93,7 @@ echo '			}
 #				"xsame^INCEQ" : -0.31886,
 #				"xsame^INCNE" : -0.508989
 cat $weights | perl -F: -lane 'push @f, "\t\t\t\"$F[0]\" : $F[1]" unless /^\s*$/; END {print join ",\n", @f;}'
-echo '            }
-        } 
-    }
+echo '            	}
+        	} 
+    	}
 }'
