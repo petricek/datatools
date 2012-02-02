@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 
-. config.sh
+if [ -f config.sh ]
+then
+	. config.sh
+else
+	if [ "$4" == "" ]
+	then
+		model_id="TBC"
+		model_name="TBC"
+		model_class="TBC"
+		qs=""
+	else
+		model_id=$3
+		model_name=$4
+		model_class="TBC"
+		qs=""
+	fi
+fi
 
-usage="$0 weights spline"
+
+usage="$0 weights spline [model_id model_name qs]"
 
 set +u
 if [ "$2" == "" ]
@@ -39,17 +56,17 @@ echo '
 			"name" : "'$model_name'"
 		},
                 "properties" : {
-                        "stamp" : "'$stamp'",
-                        "attributes" : ['
+                        "stamp" : "'$stamp'"'
+#                        "attributes" : ['
 # attributes needed
-echo '                        ]
-                        "features" : {'
-cat $weights | egrep -v '^Constant' | cut -f1 -d=| cut -c2-| perl -pe 's/^\^//;'| uniq.pl \
-| perl -F: -lane 'push @f, "\t\t\t\"$F[0]\" : $F[0]" unless /^\s*$/; END {print join ",\n", @f;}' \
-| perl -pe 's/^/\t\t\t\t"/;s/$/",/;'
+#echo '                        ]'
+#                        "features" : {'
+#cat $weights | egrep -v '^Constant' | cut -f1 -d=| cut -c2-| perl -pe 's/^\^//;'| uniq.pl \
+#| perl -F: -lane 'push @f, "\t\t\t\"$F[0]\" : $F[0]" unless /^\s*$/; END {print join ",\n", @f;}' \
+#| perl -pe 's/^/\t\t\t\t"/;s/$/",/;'
 #cat model-final.weights | egrep -v '^Constant' | cut -f1 -d=| cut -c2-| perl -pe 's/^\^//;'| uniq.pl | less
-echo '
-                        }
+echo \
+'                        }
                 },
 		"interactions" : { '$qsjson' },
 		"spline" : {

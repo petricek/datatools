@@ -9,6 +9,12 @@ probs=$1
 min=$2
 max=$3
 
+if [ `wc -l $probs -l | cut -f1 -d' '` -le 4 ]
+then
+	cat $probs | cut -f1-2
+	exit
+fi
+
 if [ "$max" == "" ]
 then
 	max=1
