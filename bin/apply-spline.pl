@@ -88,6 +88,7 @@ sub calibrate($$)
 
 	my $l = sprintf("%.2f", 0.05 * floor($score / 0.05));
 	my $u = sprintf("%.2f", 0.05 * ceil($score / 0.05));
+	#print "l=$l u=$u\n";
 	if($l == $u)
 	{
 		$cal_pred = $spline{$l};
@@ -104,12 +105,12 @@ sub calibrate($$)
 		my $lv = $spline{sprintf("%.2f",$l)};
 		my $uv = $spline{sprintf("%.2f",$u)};
 
-#			print "# score=$score l=$l u=$u ld=$ld ud=$ud lv=$lv uv=$uv\n" if ($d == 0);
+		#print "# score=$score l=$l u=$u ld=$ld ud=$ud lv=$lv uv=$uv\n" if ($d == 0);
 		my $lw = $ud / $d;
 		my $uw = $ld / $d;
 
-#			print "# score=$score l=$l u=$u ld=$ld ud=$ud lv=$lv uv=$uv lw=$lw uw=$uw\n";
-		$cal_pred = $lv * $lw + $spline{$u} * $uw; 
+		#print "# score=$score l=$l u=$u ld=$ld ud=$ud lv=$lv uv=$uv lw=$lw uw=$uw\n";
+		$cal_pred = $lv * $lw + $uv * $uw; 
 	}
 
 	return $cal_pred;
