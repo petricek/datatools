@@ -9,7 +9,7 @@ my $p = shift @ARGV or die "Usage: $0 prob_accept_negative\n";
 
 while(my $line=<>)
 {
-	if($line =~ /^0/)
+	if(($line =~ /^0/) or ($line =~ /^-1/))
 	{
 		print $line if(rand() < $p); 
 	}
