@@ -27,7 +27,7 @@ fi
 echo "
 suppressMessages(library(lattice, verbose=F))
 suppressMessages(library(binom, verbose=F))
-suppressMessages(library(Hmisc, verbose=F))
+#suppressMessages(library(Hmisc, verbose=F))
 suppressMessages(library(stats, verbose=F))
 
 probs=read.delim(file='$probs',sep='\t',header=F)
