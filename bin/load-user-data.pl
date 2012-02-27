@@ -2,7 +2,7 @@
 
 use warnings;
 use strict;
-use Devel::Size qw(total_size);
+#use Devel::Size qw(total_size);
 
 # Load and parse header
 my $header=<>;
