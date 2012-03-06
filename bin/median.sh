@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+cd $(dirname "$0" )
+
 
 if [ "$1" == "help" ]
 then
@@ -12,4 +16,6 @@ then
 fi
 
 
-R --vanilla --slave -f /vw/bin/median.r
+R --vanilla --slave -f median.r
+
+cd -
