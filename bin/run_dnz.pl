@@ -13,8 +13,6 @@ my $command = join " ",
                    "| perl -ne 'print \$l if defined (\$l); s/\\t/\\\\t/g; s/\\|\\|\\|/\\t/g; \$l=\$_; } { print STDERR \$l if defined (\$l);'";
 my $test_command = "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -c 'select 1;' 2>&1 | grep -q failed ";
 
-print $test_command;
-
 while(system($test_command) == -1)
 {
 	printf ".";
