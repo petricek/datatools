@@ -6,8 +6,10 @@ use strict;
 
 use IO::File;
 
-my $usage = "zcat data.gz | $0 header\n";
+my $usage = "zcat data.gz | $0 header [ (+|-) list]\n";
 my $headerfile = shift @ARGV or die "$usage";
+my $include = shift @ARGV;
+my $list = shift @ARGV;
 my $headerfh = new IO::File $headerfile, "r" or die $!;
 my $headerline = <$headerfh>;
 undef $headerfh;
@@ -25,64 +27,21 @@ foreach my $header (@headers)
     die "bad header $header" if $header =~ /:\|\s/;
   }
 
-my %whitelist = map { $_ => 1 } qw (
-SS_IMP_MATCH_DENOMINATION_U
-SS_IMP_MATCH_DISTANCE_U
-SS_IMP_MATCH_DRINKING_LEVEL_U
-SS_IMP_MATCH_HEIGHT_U
-SS_IMP_MATCH_DENOMINATION_C
-SS_IMP_MATCH_DISTANCE_C
-SS_IMP_MATCH_DRINKING_LEVEL_C
-SS_IMP_MATCH_HEIGHT_C
-);
-my %blacklist = map { $_ => 1 } qw (
-                                     TWOWAYCOMM
-                                     TWOWAYCOMM_14D
-                                     TWOWAYCOMM_STAMP
-                                     M_ONE_WAY
-                                     MATCH_DATE
-                                     PairingCardinal
-                                     MatchCardinal
-                                     AvailableMatchAllowanceLeft
-                                     MATCHDATESTAMP
-                                     MATCH_ID
-                                     USER_LAST
-                                     CAND_LAST
-                                     USER_ID
-                                     CANDIDATEUSER_ID
-                                     CAND_LAST_ID
-                                     USER_LAST_ID
-                                     AvailablePairingLeft 
-                                     MA_USERTOTALMATCHES_C 
-                                     MA_USERTOTALMATCHES_U 
-                                     M_MATCHID 
-                                     ModelScore 
-                                     PA_DISTANCE 
-                                     PS_AVAILABLE_PAIRINGS_C 
-                                     PS_AVAILABLE_PAIRINGS_U 
-                                     PS_PAIRINGCOUNT_C 
-                                     PS_PAIRINGCOUNT_U 
-                                     TWOWAYCOMM_DATETIME 
-                                     TimeStamp 
-                                     UO_USERTOTALVISITS_C 
-                                     UO_USERTOTALVISITS_U 
-                                     US_ODMRCOUNT_C 
-                                     US_ODMRCOUNT_U 
-                                     US_USERID_C 
-                                     US_USERID_U 
-				     LOGINS_MATCH_ID
-				     USER_ID
-				     CANDIDATEUSER_ID
-				     CREATE_DATE
-				     UPS_MATCH_ID
-				     MATCHDATESTAMP
-				     USER_ID
-				     CANDIDATEUSER_ID
-                                   );
+my %whitelist = map { $_ => 1 } split(/ |\t/, ($include == '+') ? $list : '' );
+my %blacklist = map { $_ => 1 } split(/ |\t/, ($include == '-') ? $list : '' );
 
-#my @okkeys = grep { ! exists $blacklist{$_} } keys %headers;
-my @okkeys = grep { exists $whitelist{$_} } keys %headers;
+my @okkeys = ();
+if($include == '+')
+{
+	@okkeys = grep { exists $whitelist{$_} } keys %headers;
+}
+else
+{
+	@okkeys = grep { ! exists $blacklist{$_} } keys %headers;
+}
+
 print join '|', @okkeys;
+
 my %counts;
 my $totalpos = 0;
 my $total = 0;
@@ -92,11 +51,7 @@ while (<>)
     chomp;
     my @line = split /\t/, $_;
 
-	#next if ($line[$headers{US_GENDER_PREFERENCE_U}] eq $line[$headers{US_USERGENDER_U}]);
-	next if ($line[$headers{M_MATCHTYPE}] != 1);
-	next if ($line[$headers{M_ONE_WAY}] > 0);
-
-    my $positive = (defined $headers{TWOWAYCOMM}) ? $line[$headers{TWOWAYCOMM}] : $line[$headers{TWOWAYCOMM_14D}];
+    my $positive = defined $headers{LABEL};
 
     foreach my $col (@okkeys)
       {
