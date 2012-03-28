@@ -31,4 +31,4 @@ fi
 
 R --vanilla --slave -f <( rcode )
 
-cd -
+cd - > /dev/null
