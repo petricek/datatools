@@ -6,16 +6,19 @@ use strict;
 
 use IO::File;
 
-my $usage = "zcat data.gz | $0 header [ (+|-) list]\n";
+my $usage = "zcat data.gz | $0 header labelcol [ (+|-) list]\n";
+
 my $headerfile = shift @ARGV or die "$usage";
+my $labelcol = shift @ARGV or die "$usage";
 my $include = shift @ARGV;
 my $list = shift @ARGV;
+
 my $headerfh = new IO::File $headerfile, "r" or die $!;
 my $headerline = <$headerfh>;
 undef $headerfh;
 
 chomp $headerline;
-my @headers = split /,/, $headerline;
+my @headers = split /\t/, $headerline;
 my %headers;
 my $index = 0;
 
@@ -27,11 +30,11 @@ foreach my $header (@headers)
     die "bad header $header" if $header =~ /:\|\s/;
   }
 
-my %whitelist = map { $_ => 1 } split(/ |\t/, ($include == '+') ? $list : '' );
-my %blacklist = map { $_ => 1 } split(/ |\t/, ($include == '-') ? $list : '' );
+my %whitelist = map { $_ => 1 } split(/ |\t/, ($include eq '+') ? $list : '' );
+my %blacklist = map { $_ => 1 } split(/ |\t/, ($include eq '-') ? $list : '' );
 
 my @okkeys = ();
-if($include == '+')
+if($include eq '+')
 {
 	@okkeys = grep { exists $whitelist{$_} } keys %headers;
 }
@@ -40,7 +43,7 @@ else
 	@okkeys = grep { ! exists $blacklist{$_} } keys %headers;
 }
 
-print join '|', @okkeys;
+#print join '|', @okkeys;
 
 my %counts;
 my $totalpos = 0;
@@ -51,7 +54,7 @@ while (<>)
     chomp;
     my @line = split /\t/, $_;
 
-    my $positive = defined $headers{LABEL};
+    my $positive = $line[$labelcol - 1];
 
     foreach my $col (@okkeys)
       {
