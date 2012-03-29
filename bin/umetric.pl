@@ -32,6 +32,7 @@ sub compute_user_metric($$$)
 #	print "==\n";
 	my $out = <CHLD_OUT>;
 	close CHLD_OUT;
+	waitpid $pid, 0;
 	$out =~ /^[^\s]*\s*(.*)/;
 	my $metric = $1;
 #	print "$metric\n";

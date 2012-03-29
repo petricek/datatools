@@ -11,11 +11,9 @@ my $command = join " ",
                    "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -A -F'|||' ",
                    (map { "'$_'" } @ARGV),
                    "| perl -ne 'print \$l if defined (\$l); s/\\t/\\\\t/g; s/\\|\\|\\|/\\t/g; \$l=\$_; } { print STDERR \$l if defined (\$l);'";
-my $test_command = "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -c 'select 1;' 2>&1 | grep -q failed ";
+my $test_command = "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -c 'select 1;' > /dev/null 2>&1";
 
-print $test_command;
-
-while(system($test_command) == -1)
+while(system($test_command) != 0)
 {
 	printf ".";
 	sleep(15);

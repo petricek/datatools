@@ -1,20 +1,53 @@
 #!/usr/bin/env bash
 
-paired=$1
-alternative=$2
+set -e 
 
-if [ "$1" == "help" ]
-then
-	echo "Usage:  $0 <paired|unpaired|help> <less|double.sided|greater> 
+usage="Usage:  $0 <paired|unpaired|help> <less|two.sided|greater> 
 	paste baseline.aucs model.aucs | $0 paired less"
-	exit
-fi
 
+paired="TRUE"
+alternative="two.sided"
 
-	R --vanilla --slave -f $( echo "
-d <- read.table("/dev/stdin")
+while [ "$1" != "" ]
+do
+	case "$1" in
+	paired)
+		paired="TRUE"
+	;;
+	unpaired)
+		paired="FALSE"
+	;;
+	less)
+		alternative="less"
+	;;
+	gretaer)
+		alternative="greater"
+	;;
+	two.sided)
+		alternative="two.sided"
+	;;
+	*)
+		echo $usage
+		exit
+	;;
+	esac
+
+	shift
+done
+
+set -u
+
+function rcode()
+{
+cat << __EOF__
+mystdin <- file("stdin")
+d <- read.table(mystdin)
 print(d)
 t=t.test(d[,1],d[,2],paired=$paired,alternative="$alternative")
-cat(t$p.value, t$estimate, t$conf.int, '\n', sep = '\t')
+cat('p.value', 'estimate', 'conf.int', '\n', sep = '\t')
+cat(t\$p.value, t\$estimate, t\$conf.int, '\n', sep = '\t')
 q(runLast=FALSE)
-	")
+__EOF__
+}
+
+R --vanilla --slave -f <( rcode | tee dbg)
