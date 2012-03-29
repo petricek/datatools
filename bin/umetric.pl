@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #
 # assumes that the input is sorted and grouped by user
-# TODO: make it not assume sorted by target and prediction
+# TODO: change not to assume sorted input by target and prediction
 #
 # Prediction Target UserId 
 #
@@ -11,7 +11,7 @@ use warnings;
 
 use IPC::Open2;
 
-$|=1;
+#$|=1;
 
 our $verbose = 0;
 
@@ -22,42 +22,38 @@ sub compute_user_metric($$$)
 	return "NaN" if(0 == (scalar @$positives));
 	return "NaN" if(0 == (scalar @$negatives));
 
-        my $pid = open2(\*CHLD_OUT, \*CHLD_IN, "tee xxx | perf -$metric_name");
+        my $pid = open2(\*CHLD_OUT, \*CHLD_IN, "perf -$metric_name");
 	foreach my $l (@$positives, @$negatives)
 	{
 		print CHLD_IN $l;
 	}
 	close CHLD_IN;
 
-#	print "==\n";
 	my $out = <CHLD_OUT>;
 	close CHLD_OUT;
 	waitpid $pid, 0;
+
 	$out =~ /^[^\s]*\s*(.*)/;
 	my $metric = $1;
-#	print "$metric\n";
-#	print "==\n";
+
 	return $metric;
 }
 
 sub main()
 {
 
-	my $usage = "Expects: pred target user\n\nassumes that the input is sorted and grouped by user\n\n$0 metric [verbose]\n";
-	my $metric_name = "undefined";
-	while(my $arg = shift @ARGV)
+	my $usage = "Expects: pred target user
+assumes that the input is sorted and grouped by user
+
+Usage: $0 metric [verbose]
+
+";
+	my $metric_name = shift @ARGV or die $usage;
+	if((defined $ARGV[0]) and ($ARGV[0] eq "verbose"))
 	{
-		if((defined $arg) and ($arg eq "verbose"))
-		{
-			$verbose = 1;
-			next;
-		}
-		else
-		{
-			$metric_name = $arg;	
-		}
+		$verbose = 1;
+		shift;
 	}
-	die $usage if $metric_name eq "undefined";
 
         my $previous_user = -1;
         my $n_all_users = 0;
@@ -73,7 +69,6 @@ sub main()
 
                 my ($pred, $t, $user) = split(/\s|_/,$line,-1);
 
-#		print "### $user $previous_user\n";
 		if(($user != $previous_user) and ($previous_user != -1))
 		{
 			my $metric = compute_user_metric(\@positives, \@negatives, $metric_name);
