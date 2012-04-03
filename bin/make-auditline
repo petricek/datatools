@@ -3,12 +3,12 @@
 use warnings;
 use strict;
 
-my %uniqs;
+my %uniqs = ();
 
 while (defined ($_ = <>))
   {
     chomp;
-    my (undef, @groups) = split /\s+\|/, $_;
+    my (undef, @groups) = split /\s*\|/, $_;
 
     foreach my $g (@groups)
       {
