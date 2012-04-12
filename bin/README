@@ -1,4 +1,4 @@
-apply-spline.pl
+apply-spline.pl	Apply a spline calibration to predictions read from stdin
 audit2weights	Extract feature names and weights from vowpal wabbit --audit output
 clip.pl		Truncate list of numeric predictions to a specified interval
 cv-split.pl	Split lines in a round-robin into n files for crossvalidation.
