@@ -12,7 +12,7 @@ use POSIX qw(ceil tanh);
 #                                mainz                                
 #---------------------------------------------------------------------
 
-my $usage = "Usage $0 header headeron|headeroff re [re ...]\n";
+my $usage = "Usage $0 <headerfile|-> headeron|headeroff re [re ...]\n";
 my $headerfile = shift @ARGV || die $usage;
 my $headeron = shift @ARGV || die $usage;
 my @res = @ARGV;
