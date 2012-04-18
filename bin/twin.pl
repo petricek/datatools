@@ -66,7 +66,7 @@ sub main()
 	{
 		chomp $l;
 		my ($dv, $_, $uid, $rest) = split(/ |_|\|/, $l, 4);
-		print "#uid=$uid\n";
+		#print "#uid=$uid\n";
 
 		if(($uid ne $previous_uid) and ($uid ne "-1"))
 		{
