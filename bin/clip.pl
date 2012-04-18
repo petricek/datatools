@@ -9,7 +9,7 @@ my $col = shift @ARGV;
 
 $min = 0 if ! defined $min;
 $max = 1 if ! defined $max;
-$col = 1 if ! defined $max;
+$col = 1 if ! defined $col;
 
 while(my $l=<>)
 {
