@@ -15,7 +15,7 @@ my $test_command = "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -c 'select 1
 
 while(system($test_command) != 0)
 {
-	printf ".";
+	printf STDERR ".";
 	sleep(15);
 }
 
