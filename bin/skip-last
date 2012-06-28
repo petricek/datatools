@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $prev;
+while(<>)
+{
+	print $prev if defined $prev;
+	$prev=$_;
+}
