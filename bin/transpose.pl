@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-my $usage = "$0 sep mat > tr_mat\n";
+my $usage = "cat [mat] | $0 sep [mat] > tr_mat\n";
 my $sep = shift @ARGV or die $usage;
 
 my @tr=();
