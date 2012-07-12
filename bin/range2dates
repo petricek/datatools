@@ -20,8 +20,8 @@ sub epoch2ymd($)
 {
         my ($e) = @_;
 
-        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($e);
-        my ($t1,$t2,$t3, $d, $m, $y, $t4,$t5,$t6) = localtime($e);
+        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($e);
+        my ($t1,$t2,$t3, $d, $m, $y, $t4,$t5,$t6) = gmtime($e);
 
         return (1900 + $year, sprintf("%02d", ($mon + 1)), sprintf("%02d", $mday));
 }
@@ -30,7 +30,7 @@ sub ymd2epoch($$$)
 {
         my ($y, $m, $d) = @_;
 
-	return timelocal(1,1,1,$d,$m-1,$y);
+	return timegm(1,1,1,$d,$m-1,$y);
 }
 
 sub range2dates($$)
