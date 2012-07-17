@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $usage="$0 <before|only|after> re\n";
+my $what = shift @ARGV or die $usage;
+my $re = shift @ARGV or die $usage;
+
+my $stage='before';
+while(<>)
+{
+	if(/$re/)
+	{
+		$stage='only';
+	}
+	if(/${re}_end/)
+	{
+		$stage='after';
+	}
+	print $_ if $stage eq $what;
+	#print $stage . '_' . $_;
+}
