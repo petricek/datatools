@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+
+TABLE=$1
+PARTCOLS=$2
+shift
+shift
+hive -S -e "describe $TABLE;"  \
+| perl -e '
+%is_part = map { $_ => 1 } @ARGV;
+@ARGV=();
+while(<>)
+{
+chomp;
+my @F = split(/\s\s*/,$_);
+if(exists $is_part{$F[0]}) {
+  push @parts, "$F[0] $F[1]";
+} else {
+  push @fields, "$F[0] $F[1]";
+}
+}
+print "(" . join(", ", @fields) . ") PARTITIONED BY (" . join(", ", @parts) . ")"
+' $PARTCOLS
+
