@@ -10,6 +10,21 @@ $|=1;
 
 s/__(\w+?)__/$ENV{$1}/eg;
 
+if(/^(.*)__INCLUDE\(([^)]*)\)(.*)$/)
+{
+	my $headerfile = $2;
+	my $prefix=$1;
+	my $postfix=$3;
+	open(H, "$headerfile")|| die "Cannot open header $headerfile:$!\n";
+	my @lines=();
+	print $prefix;
+	while(my $l=<H>)
+	{
+		print $l;
+	};
+	print $postfix . "\n";
+	close H;
+}
 if(/^(.*)__HEADER\(([^)]*)\)(.*)$/)
 {
 	my $headerfile = $2;
@@ -21,7 +36,6 @@ if(/^(.*)__HEADER\(([^)]*)\)(.*)$/)
 	my @vals = split(/\t/, $line);
 	print $prefix . join(", ", map { "$_ STRING";} @vals). $postfix . "\n";
 	close H;
-	#die "Yeah";
 }
 elsif(/^__FOREACH_(\w+?):(.*)__X(.*)/)
 {
