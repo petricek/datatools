@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+
+hive -S -e "describe $1;" | perl -lane 'push @fields, $F[0]; END {print join "\t", @fields;}'
