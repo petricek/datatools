@@ -32,7 +32,7 @@ my $index = 0;
 my $cond=1;
 
 chomp $headerline;
-my @headers = split /,|\t/, $headerline;
+my @headers = split /,|\t|/, $headerline;
 my %headers;
 
 foreach my $header (@headers)
@@ -79,7 +79,7 @@ while (defined ($_ = <>))
 	die $_ if $_ =~ /:\|/;
 
 	chomp;
-	my @line = split /,|\t/, $_;
+	my @line = split /,|\t|/, $_;
 
 	next unless eval $cond;
 
