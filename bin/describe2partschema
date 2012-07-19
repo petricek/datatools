@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
 set -e
-set -u
 
+usage="$0 table \"partition columns\"\n"
+if [ "$2" == "" ]
+then
+	echo $usage
+	exit
+fi
+set -u
 TABLE=$1
 PARTCOLS=$2
 shift
