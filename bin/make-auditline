@@ -8,6 +8,7 @@ my %uniqs = ();
 while (defined ($_ = <>))
   {
     chomp;
+    s/\t$//;
     my (undef, @groups) = split /\s*\|/, $_;
 
     foreach my $g (@groups)
