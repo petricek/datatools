@@ -45,7 +45,7 @@ if(ncols == 5) ci=binom.confint(probs[,5],probs[,4],methods='exact') else ci=bin
 
 redspline=smooth.spline(probs[,1],ci[,'mean'],probs[,4])
 
-png('$probs.png',width = 800, height = 600)
+jpeg('$probs.jpeg',width = 800, height = 600)
 errbar(probs[,1],ci[,'mean'],ci[,'lower'],ci[,'upper'],xlab=\"predicted probability\",ylab=\"empirical probability\")
 title(\"$label\")
 lines(redspline, col='red')
@@ -61,7 +61,7 @@ dev.off()
 ci=ci[ci[,'mean']>0,]
 probs=probs[probs[,2]>0,]
 
-png('$probs.logy.png',width = 800, height = 600)
+jpeg('$probs.logy.jpeg',width = 800, height = 600)
 errbar(probs[,1],ci[,'mean'],ci[,'lower'],ci[,'upper'],log='y',,xlab=\"predicted probability\",ylab=\"empirical probability\")
 title(\"$label\")
 lines(redspline, col='red')
