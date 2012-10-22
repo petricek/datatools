@@ -9,7 +9,14 @@ my $seed = shift @ARGV;
 $seed = (defined $seed) ? $seed : 7;
 srand $seed;
 
+my $invertResults = shift @ARGV;
+$invertResults = (defined $invertResults) ? $invertResults : 0;
+
 while(my $line=<>)
 {
+	if($invertResults){
+		print $line if(rand() >= $p)
+	}else{
 		print $line if(rand() < $p); 
+	}
 }
