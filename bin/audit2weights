@@ -2,7 +2,7 @@
 
 if [ "$1" = "all" ]
 then
-	grep '	' | tr '\t' '\n' | cut -f1,4 -d: | sort -k1,1 -k2,2n -t= | uniq |                 egrep -v '^\s*$'
+	grep '	' | tr '\t' '\n' | cut -f1,4 -d: | sort -k1,1 -k2,2n -t= | uniq | sed -e 's/@0$//' |                 egrep -v '^\s*$'
 else
-	grep '	' | tr '\t' '\n' | cut -f1,4 -d: | sort -k1,1 -k2,2n -t= | uniq | grep -v ':0$' | egrep -v '^\s*$'
+	grep '	' | tr '\t' '\n' | cut -f1,4 -d: | sort -k1,1 -k2,2n -t= | uniq | sed -e 's/@0$//' | grep -v ':0$' | egrep -v '^\s*$'
 fi
