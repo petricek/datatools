@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-my $p = shift @ARGV or die "Usage: $0 prob_accept\n";
+my $p = shift @ARGV or die "Usage: $0 prob_accept [invert_results]\n";
 
 my $seed = shift @ARGV;
 $seed = (defined $seed) ? $seed : 7;
