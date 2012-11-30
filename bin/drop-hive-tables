@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+cd $(dirname "$0" )
+
+set -e
+
+usage="$0 regex [database]"
+if [ "$1" == "" ]
+then
+	echo $usage
+	exit
+fi
+
+if [ "$2" == "" ]
+then
+	use_database=""
+else
+	use_database="use $2;"
+fi
+
+set -u
+
+regex=$1
+
+tables=`hive -e "$use_database show tables;" | grep $regex`
+
+echo
+echo $tables | tr ' ' '\n'
+echo
+echo -n "DELETE? Type yes[ENTER] to proceed:"
+
+read answer
+
+if [ "$answer" == yes ]
+then
+
+	for t in $tables
+	do
+		echo "Dropping $t"
+		hive -e "$use_database drop table $t;"
+	done
+fi
