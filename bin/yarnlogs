@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+usage="$0 application_id"
+
+APPID=$1
+if [ "$1" == "" ]
+then
+        echo $usage
+        exit
+fi
+shift
+
+set -e
+set -u
+
+ID=`echo $APPID | perl -pe "s/application_/job_/g;"`
+
+echo http://prodhdjobtracker.dc1.eharmony.com:19888/jobhistory/job/$ID 
+
