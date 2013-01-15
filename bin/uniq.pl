@@ -44,7 +44,7 @@ if($mode eq "percent")
 {
 	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
 	{
-		printf "%.1f\t%d\n", ((100 * $lines{$k}) / $total), $k;
+		printf "%.1f\t%s\n", ((100 * $lines{$k}) / $total), $k;
 	}
 }
 
