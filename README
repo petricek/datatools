@@ -23,7 +23,7 @@ run_dnz.pl	Nzsql wrapper that waits if the server is down.
 sd.sh		Compute standard deviation of input.
 select-columns-re.pl	Print selected columns from a tsv - supports regexes
 shuffle.pl	Shuffle blocks of N lines 
-shutdown-when-idle.sh	Take doen an EMR cluster when jobs finished
+shutdown-when-idle.sh	Take down an EMR cluster when jobs finished
 split.pl	
 subsample-negatives.pl	Print negative lines only with probability p and keep all positive lines
 subsample.pl	Print each line with a probability p
