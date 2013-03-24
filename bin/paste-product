@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $U = shift @ARGV || die "user file missing\n";
+my $V = shift @ARGV || die "viddy file missing\n";
+
+open(U, $U) || die "cannot open $U:$!\n";
+
+while(my $u = <U>)
+{
+        chomp $u;
+        open(V, $V) || die "cannot open $V:$!\n";
+        while(my $v = <V>)
+        {
+                print "$u $v";
+        }
+        close V;
+}
+
+close U;
+
