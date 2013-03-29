@@ -15,4 +15,5 @@ split /[^\w']+/, $a;
 while(<>)
 {
 	print join " ", tokenize($_);
+        print "\n";
 }
