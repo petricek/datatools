@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+usage="$0 dbfrom dbto regex"
+
+if [ "$3" == "" ]
+then
+        echo $usage
+        exit
+fi
+set -u
+
+dbfrom=$1
+dbto=$2
+shift
+shift
+regex=$*
+
+tables=`hive --database $dbfrom -e 'show tables'| grep $regex`
+
+for t in $tables
+do
+        echo "$t"
+        hive -e "
+                create table $dbto.$t as select * from $dbfrom.$t;
+                drop table $dbfrom.$t;
+        "
+done
