@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $usage = "$0 n [sep]\n";
+
+my $n = shift @ARGV || die $usage;
+my $sep = shift @ARGV;
+$sep = defined $sep ? $sep : "\t";
+
+while(my $line=<>)
+{
+        my @F= split($sep, $line);
+        print $line if(scalar(@F) == $n);
+}
+
