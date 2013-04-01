@@ -28,7 +28,9 @@ int main(int argc, char *argv[])
                 {
                         printf("%s%s", u, i);
                 }
+                fclose(fB);
         }
+        fclose(fA);
 
 
         exit(EXIT_SUCCESS);
