@@ -66,7 +66,7 @@ int main(int argc, char * argv[]) {
   int opt;
   FILE *dfilef=stdin;
   FILE *bfilef=NULL;
-  char line[100];
+  char line[1024];
  
   while ( (opt = getopt(argc, argv, "b:v+")) != -1) {
     switch (opt) {
