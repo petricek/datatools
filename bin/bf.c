@@ -35,10 +35,10 @@ void get_hashv(char *in, size_t len, unsigned *out) {
 
 #define BIT_TEST(c,i) (c[i/8] & (1 << (i % 8)))
 #define BIT_SET(c,i) (c[i/8] |= (1 << (i % 8)))
-#define byte_len(n) (((1UL << b) / 8) + (((1UL << b) % 8) ? 1 : 0))
-#define num_bits(n) (1UL << b)
+#define byte_len(b) (((1UL << b) / 8) + (((1UL << b) % 8) ? 1 : 0))
+#define num_bits(b) (1UL << b)
 char *bf_new(unsigned b) {
-  char *bf = calloc(1,byte_len(n));
+  char *bf = calloc(1,byte_len(b));
   return bf;
 }
 void bf_add(char *bf, char *line) {
@@ -48,10 +48,10 @@ void bf_add(char *bf, char *line) {
 }
 void bf_info(char *bf, FILE *f) {
   unsigned i, on=0;
-  for(i=0; i<num_bits(n); i++) 
+  for(i=0; i<num_bits(b); i++) 
     if (BIT_TEST(bf,i)) on++;
 
-  fprintf(f, "%.2f%% saturation (%lu bits)\n", on*100.0/num_bits(n), num_bits(n));
+  fprintf(f, "%.2f%% saturation (%lu bits)\n", on*100.0/num_bits(b), num_bits(b));
 }
 int bf_hit(char *bf, char *line) {
   unsigned i, hashv[NUM_HASHES];
