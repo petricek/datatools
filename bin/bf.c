@@ -7,8 +7,8 @@
  
 int b=16;
 int verbose=0;
-char *ifile=NULL;
-char *tfile=NULL;
+char *dfile="/dev/stdin";
+char *bfile=NULL;
  
 void usage(char *prog) {
   fprintf(stderr, "usage: cat data | %s [-b <2|4|8|...|32>] [-v] <blacklist>\n", prog);
@@ -64,7 +64,8 @@ int bf_hit(char *bf, char *line) {
  
 int main(int argc, char * argv[]) {
   int opt;
-  FILE *ifilef=stdin,*tfilef=NULL;
+  FILE *dfilef=stdin;
+  FILE *bfilef=NULL;
   char line[100];
  
   while ( (opt = getopt(argc, argv, "b:v+")) != -1) {
@@ -81,17 +82,16 @@ int main(int argc, char * argv[]) {
     }
   }
  
-  if (optind < argc) ifile=argv[optind++];
-  if (optind < argc) tfile=argv[optind++];
-  if (!ifile || !tfile) usage(argv[0]);
+  if (optind < argc) bfile=argv[optind++];
+  if (!bfile || !dfile) usage(argv[0]);
 
   /* open files */
-  if ( (ifilef = fopen(ifile,"r")) == NULL) {
-    fprintf(stderr,"can't open %s: %s\n", ifile, strerror(errno));
+  if ( (bfilef = fopen(bfile,"r")) == NULL) {
+    fprintf(stderr,"can't open %s: %s\n", bfile, strerror(errno));
     exit(-1);
   }
-  if ( (tfilef = fopen(tfile,"r")) == NULL) {
-    fprintf(stderr,"can't open %s: %s\n", tfile, strerror(errno));
+  if ( (dfilef = fopen(dfile,"r")) == NULL) {
+    fprintf(stderr,"can't open %s: %s\n", dfile, strerror(errno));
     exit(-1);
   }
 
@@ -99,13 +99,13 @@ int main(int argc, char * argv[]) {
   char *bf= bf_new(b);
  
   /* loop over the source file */
-  while (fgets(line,sizeof(line),ifilef) != NULL) bf_add(bf,line);
+  while (fgets(line,sizeof(line),bfilef) != NULL) bf_add(bf,line);
 
   /* print saturation etc */
   if (verbose) bf_info(bf,stderr); 
 
   /* now loop over the test file */
-  while (fgets(line,sizeof(line),tfilef) != NULL) {
+  while (fgets(line,sizeof(line),dfilef) != NULL) {
     if (!bf_hit(bf,line)) {
       printf("%s", line);
     }
