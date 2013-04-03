@@ -21,8 +21,7 @@ if($mode eq "counts")
 {
 	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
 	{
-                chomp $k;
-		print "$lines{$k}\t$k\n";
+		print "$lines{$k}\t$k";
 	}
 }
 
@@ -30,8 +29,7 @@ if($mode eq "percent")
 {
 	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
 	{
-                chomp $k;
-		printf "%.1f\t%s\n", ((100 * $lines{$k}) / $total), $k;
+		printf "%.1f\t%s", ((100 * $lines{$k}) / $total), $k;
 	}
 }
 
