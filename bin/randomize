@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -u
+set -e
+
+nl | gsort -k1,1 -R $* | cut -f2- 

@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Bloom::Filter;
+
+my $usage = "$0 blacklist n_items_in_blacklist [fp_rate]\n";
+
+my $blacklist = shift @ARGV || die $usage;
+my $n_blacklist = shift @ARGV || die $usage;
+my $fp_rate = shift @ARGV;
+$fp_rate = defined $fp_rate ? $fp_rate : 0.01;
+
+my $filter = Bloom::Filter->new( error_rate => $fp_rate, capacity => $n_blacklist );
+
+print STDERR "loading blacklist $blacklist ...\n";
+open(B, "$blacklist") || die "Error opening $blacklist:$!\n";
+while (my $line = <B>) {
+        $filter->add( $line );
+}
+close B;
+print STDERR "loaded\n";
+
+
+while(my $line=<>)
+{
+        #print $filter->check( "$line" ) ? "SEEN" : "    ";
+        print $line unless $filter->check( "$line" );
+}
+

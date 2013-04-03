@@ -1,10 +1,7 @@
 #!/usr/bin/perl
 
-$|=1;
-
 use strict;
 use warnings;
-use Data::Dumper;
 
 my %lines = ();
 
@@ -15,27 +12,16 @@ my $total = 0;
 while(<>)
 {
         $total++;
-	chomp;
-	if(exists $lines{$_})
-	{
-		$lines{$_}++;
-		next;
-	}
-	else
-	{
-
-		if($mode eq "uniq")
-		{
-			print "$_\n";
-		}
-	}
-	$lines{$_}++;
+        $lines{$_}++;
+	next if($lines{$_}>1);
+        print $_ if($mode eq "uniq");
 }
 
 if($mode eq "counts")
 {
 	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
 	{
+                chomp $k;
 		print "$lines{$k}\t$k\n";
 	}
 }
@@ -44,6 +30,7 @@ if($mode eq "percent")
 {
 	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
 	{
+                chomp $k;
 		printf "%.1f\t%s\n", ((100 * $lines{$k}) / $total), $k;
 	}
 }

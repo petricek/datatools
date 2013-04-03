@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+#$|=1;
+
+use strict;
+use warnings;
+
+my $usage="$0 N\n";
+my $N = shift @ARGV or die $usage;
+
+my %lines = ();
+
+while(my $line=<>)
+{
+        $lines{$line}++;
+        print $line if $lines{$line} == $N;
+}
+
