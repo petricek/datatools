@@ -7,3 +7,5 @@ paste-product-fast: paste-product-fast.c
 bf: bf.c
 	gcc -O3 -march=nocona bf.c -o bf
      
+clean: 
+	-rm bf paste-product-fast
