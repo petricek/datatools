@@ -3,4 +3,11 @@
 set -u
 set -e
 
-nl | gsort -k1,1 -R $* | cut -f2- 
+if which gsort 2> /dev/null >/dev/null
+then
+        sort=gsort
+else
+        sort=sort
+fi        
+
+nl | $sort -k1,1 -R $* | cut -f2- 
