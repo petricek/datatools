@@ -11,8 +11,8 @@ my $help = 0;
 my $hsep = "\t";
 my $dsep = "\t";
 my $osep = "\t";
-my $hfield = 1;
-my $dfield = 1;
+my $hfield = 0;
+my $dfield = 0;
 my $hfile = undef;
 my $result = GetOptions ("hsep=s" => \$hsep,
                         "dsep=s"   => \$dsep,
