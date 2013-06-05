@@ -33,3 +33,11 @@ if($mode eq "percent")
 	}
 }
 
+if($mode eq "fraction")
+{
+	foreach my $k (reverse sort {$lines{$a} <=> $lines{$b}} keys %lines)
+	{
+		printf "%f\t%s", (($lines{$k}) / $total), $k;
+	}
+}
+
