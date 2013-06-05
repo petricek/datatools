@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-if [ "$SEED" != "" ]
-then
-        OPT="-v $SEED"
-else
-        OPT=""
-fi
-
 set -u
 set -e
 
@@ -17,4 +10,4 @@ else
         sort=sort
 fi        
 
-$sort -k1,1 -R <(nl $OPT $*) | cut -f2- 
+$sort -k1,1 -R <(nl $*) | cut -f2- 
