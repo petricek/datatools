@@ -10,4 +10,4 @@ else
         sort=sort
 fi        
 
-$sort -k1,1 -R <(nl $*) | cut -f2- 
+nl | $sort -k1,1 -R $* | cut -f2- 
