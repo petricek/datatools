@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
 set -e
+
+usage="$0 vw_file"
+
+if [ "$1" == "" ]
+then
+        echo $usage
+        exit
+fi        
 set -u
 
 paste -d "|" \
-<(cat $1 | cut -f1 -d\|) \
-<(cat $1 | cut -f2 -d\| | shuffle.pl 100000 ) \
-<(cat $1 | cut -f3- -d\| | shuffle.pl 100000 )
+<(cut -f1 -d\| $*) \
+<(cut -f2 -d\| $* | randomize ) \
+<(cut -f3- -d\| $*| randomize )

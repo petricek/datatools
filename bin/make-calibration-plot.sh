@@ -1,7 +1,7 @@
 
 if [ "$1" == "" ]
 then
-	echo "Usage: $0 probs [label]"
+	echo "Usage: $0 probs [plot label]"
 	exit
 fi
 
