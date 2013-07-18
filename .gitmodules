@@ -1,0 +1,3 @@
+[submodule "bin/duviz"]
+	path = bin/duviz
+	url = https://github.com/soxofaan/duviz
