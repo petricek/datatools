@@ -5,6 +5,7 @@ use warnings;
 
 my $var = shift @ARGV;
 my $group = shift @ARGV;
+my $smooth = shift @ARGV if defined $ARGV[0];
 
 my %cnt=();
 my %sum=();
@@ -20,6 +21,13 @@ while(my $l=<>)
 
 foreach my $grp (keys %cnt)
 {
-	print (($sum{$grp} / $cnt{$grp}) . "\t" . $cnt{$grp} . "\t$grp\n");
+	if($smooth)
+	{
+		print ((($sum{$grp} + (1*$smooth)) / ($cnt{$grp}+(2*$smooth))) . "\t" . $cnt{$grp} . "\t$grp\n");
+	}
+	else
+	{
+		print (($sum{$grp} / $cnt{$grp}) . "\t" . $cnt{$grp} . "\t$grp\n");
+	}
 }
 
