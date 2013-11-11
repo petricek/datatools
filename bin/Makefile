@@ -9,3 +9,6 @@ bf: bf.c
      
 clean: 
 	-rm bf paste-product-fast
+
+test:
+	true
