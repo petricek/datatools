@@ -1,0 +1,9 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get update -qq
+install:
+  - cd bin; make
+script: cd bin ; make test
+
