@@ -9,7 +9,7 @@ die $usage if $#ARGV <= 0;
 
 my $command = join " ",
                    "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -A -F'|||' ",
-                   (map { "'$_'" } @ARGV),
+                   (map { "\"$_\"" } @ARGV),
                    "| perl -ne 'print \$l if defined (\$l); s/\\t/\\\\t/g; s/\\|\\|\\|/\\t/g; \$l=\$_; } { print STDERR \$l if defined (\$l);'";
 my $test_command = "/usr/local/bin/nzsql -h " . $ENV{'NZ_HOST'} . " -c 'select 1;' > /dev/null 2>&1";
 
