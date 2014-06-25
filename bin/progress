@@ -13,7 +13,9 @@ while(<>)
 {
         if(($c % $f) == 0)
         {
-                print STDERR "$prefix$c\n";
+		my $date = `date`;
+		chomp $date;
+                print STDERR "$date $prefix$c\n";
                 $f*=2;
         }
         $c++;
