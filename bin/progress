@@ -2,13 +2,25 @@
 
 use strict;
 use warnings;
+use Getopt::Long;
+use POSIX;
 
-$|=1;
-
-my $prefix = shift @ARGV;
-$prefix = defined $prefix ? $prefix : "";
+my $prefix = "";
 my $c=0;
 my $f=1;
+
+my $exp   = 2.0;
+my $every = undef;
+my $verbose;
+GetOptions ("exp=f" => \$exp,
+            "every=i"  => \$every,
+            "prefix=s"  => \$prefix,
+) or die("Error in command line arguments\n");
+
+print "every = $every\n";
+print "exp = $exp\n";
+
+
 while(<>)
 {
         if(($c % $f) == 0)
@@ -16,7 +28,15 @@ while(<>)
 		my $date = `date`;
 		chomp $date;
                 print STDERR "$date $prefix$c\n";
-                $f*=2;
+		if(defined $every)
+		{
+			$f += $every;
+		}
+		else
+		{
+			$f *= $exp;
+			$f = ceil($f);
+		}
         }
         $c++;
 	print $_;
