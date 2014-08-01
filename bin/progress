@@ -17,10 +17,6 @@ GetOptions ("exp=f" => \$exp,
             "prefix=s"  => \$prefix,
 ) or die("Error in command line arguments\n");
 
-print "every = $every\n";
-print "exp = $exp\n";
-
-
 while(<>)
 {
         if(($c % $f) == 0)
